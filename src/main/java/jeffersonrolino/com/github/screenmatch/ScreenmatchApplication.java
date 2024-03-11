@@ -1,5 +1,6 @@
 package jeffersonrolino.com.github.screenmatch;
 
+import jeffersonrolino.com.github.screenmatch.model.EpisodeData;
 import jeffersonrolino.com.github.screenmatch.model.SeriesData;
 import jeffersonrolino.com.github.screenmatch.service.DataConverter;
 import jeffersonrolino.com.github.screenmatch.service.QueryApi;
@@ -30,5 +31,9 @@ public class ScreenmatchApplication implements CommandLineRunner {
 		DataConverter dataConverter = new DataConverter();
 		SeriesData seriesData = dataConverter.convertData(json, SeriesData.class);
 		System.out.println(seriesData);
+
+		String jsonEpisode = queryApi.retrieveData("https://www.omdbapi.com/?t=game+of+thrones&Season=1&Episode=1&apikey=" + apikey);
+		EpisodeData episodeData = dataConverter.convertData(jsonEpisode, EpisodeData.class);
+		System.out.println(episodeData);
 	}
 }
