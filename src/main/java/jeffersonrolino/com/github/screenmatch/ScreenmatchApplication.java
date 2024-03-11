@@ -1,5 +1,7 @@
 package jeffersonrolino.com.github.screenmatch;
 
+import jeffersonrolino.com.github.screenmatch.model.SeriesData;
+import jeffersonrolino.com.github.screenmatch.service.DataConverter;
 import jeffersonrolino.com.github.screenmatch.service.QueryApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -24,5 +26,9 @@ public class ScreenmatchApplication implements CommandLineRunner {
 		QueryApi queryApi = new QueryApi();
 		String json = queryApi.retrieveData(queryString);
 		System.out.println(json);
+
+		DataConverter dataConverter = new DataConverter();
+		SeriesData seriesData = dataConverter.convertData(json, SeriesData.class);
+		System.out.println(seriesData);
 	}
 }
