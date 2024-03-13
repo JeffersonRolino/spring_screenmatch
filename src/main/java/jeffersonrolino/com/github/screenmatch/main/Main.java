@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,5 +68,20 @@ public class Main {
 
 
         episodes.forEach(System.out::println);
+
+        System.out.println("A partir de que ano você deseja ver os episódios?");
+        int year = scanner.nextInt();
+        scanner.nextLine();
+
+        LocalDate searchDate = LocalDate.of(year, 1, 1);
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        episodes.stream()
+                .filter(episode -> episode != null && episode.getReleaseDate().isAfter(searchDate))
+                .forEach(episode -> System.out.println(
+                    "Season: " + episode.getSeason() + " " +
+                            "Episode: " + episode.getTitle() + " " +
+                            "Data laçamento: " + episode.getReleaseDate().format(dateTimeFormatter)
+                ));
     }
 }
