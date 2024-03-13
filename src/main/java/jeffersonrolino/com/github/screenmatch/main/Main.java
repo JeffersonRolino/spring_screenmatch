@@ -49,39 +49,44 @@ public class Main {
 //		seasons.forEach(System.out::println);
 
 //      Printing all Episodes for all seasons
-        seasons.forEach(season -> season.episodes().forEach(episode -> System.out.println(episode.title())));
+//        seasons.forEach(season -> season.episodes().forEach(episode -> System.out.println(episode.title())));
 
         List<EpisodeData> episodesData = seasons.stream()
                 .flatMap(season -> season.episodes().stream())
                 .collect(Collectors.toList());
 
-        System.out.println("\n Top 5 Episodes");
+        System.out.println("\n Top 10 Episodes");
         episodesData.stream()
                 .filter(episode -> !episode.review().equalsIgnoreCase("N/A"))
+                .peek(episodeData -> System.out.println("FILTER(N/A): " + episodeData))
                 .sorted(Comparator.comparing(EpisodeData::review).reversed())
-                .limit(5)
+                .peek(episodeData -> System.out.println("SORTED: " + episodeData))
+                .limit(10)
+                .peek(episodeData -> System.out.println("LIMIT 10: " + episodeData))
+                .map(episodeData -> episodeData.title().toUpperCase())
+                .peek(episodeData -> System.out.println("MAP: " + episodeData))
                 .forEach(System.out::println);
 
-        List<Episode> episodes = seasons.stream()
-                .flatMap(season -> season.episodes().stream().map(episodeData -> new Episode(season.number(), episodeData)))
-                .collect(Collectors.toList());
+//        List<Episode> episodes = seasons.stream()
+//                .flatMap(season -> season.episodes().stream().map(episodeData -> new Episode(season.number(), episodeData)))
+//                .collect(Collectors.toList());
 
 
-        episodes.forEach(System.out::println);
-
-        System.out.println("A partir de que ano você deseja ver os episódios?");
-        int year = scanner.nextInt();
-        scanner.nextLine();
-
-        LocalDate searchDate = LocalDate.of(year, 1, 1);
-
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        episodes.stream()
-                .filter(episode -> episode != null && episode.getReleaseDate().isAfter(searchDate))
-                .forEach(episode -> System.out.println(
-                    "Season: " + episode.getSeason() + " " +
-                            "Episode: " + episode.getTitle() + " " +
-                            "Data laçamento: " + episode.getReleaseDate().format(dateTimeFormatter)
-                ));
+//        episodes.forEach(System.out::println);
+//
+//        System.out.println("A partir de que ano você deseja ver os episódios?");
+//        int year = scanner.nextInt();
+//        scanner.nextLine();
+//
+//        LocalDate searchDate = LocalDate.of(year, 1, 1);
+//
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//        episodes.stream()
+//                .filter(episode -> episode != null && episode.getReleaseDate().isAfter(searchDate))
+//                .forEach(episode -> System.out.println(
+//                    "Season: " + episode.getSeason() + " " +
+//                            "Episode: " + episode.getTitle() + " " +
+//                            "Data laçamento: " + episode.getReleaseDate().format(dateTimeFormatter)
+//                ));
     }
 }
