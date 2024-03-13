@@ -1,5 +1,6 @@
 package jeffersonrolino.com.github.screenmatch.main;
 
+import jeffersonrolino.com.github.screenmatch.model.Episode;
 import jeffersonrolino.com.github.screenmatch.model.EpisodeData;
 import jeffersonrolino.com.github.screenmatch.model.SeasonData;
 import jeffersonrolino.com.github.screenmatch.model.SeriesData;
@@ -48,15 +49,22 @@ public class Main {
 //      Printing all Episodes for all seasons
         seasons.forEach(season -> season.episodes().forEach(episode -> System.out.println(episode.title())));
 
-        List<EpisodeData> episodes = seasons.stream()
+        List<EpisodeData> episodesData = seasons.stream()
                 .flatMap(season -> season.episodes().stream())
                 .collect(Collectors.toList());
 
         System.out.println("\n Top 5 Episodes");
-        episodes.stream()
+        episodesData.stream()
                 .filter(episode -> !episode.review().equalsIgnoreCase("N/A"))
                 .sorted(Comparator.comparing(EpisodeData::review).reversed())
                 .limit(5)
                 .forEach(System.out::println);
+
+        List<Episode> episodes = seasons.stream()
+                .flatMap(season -> season.episodes().stream().map(episodeData -> new Episode(season.number(), episodeData)))
+                .collect(Collectors.toList());
+
+
+        episodes.forEach(System.out::println);
     }
 }
