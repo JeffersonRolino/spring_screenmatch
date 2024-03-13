@@ -1,5 +1,6 @@
 package jeffersonrolino.com.github.screenmatch.main;
 
+import jeffersonrolino.com.github.screenmatch.model.EpisodeData;
 import jeffersonrolino.com.github.screenmatch.model.SeasonData;
 import jeffersonrolino.com.github.screenmatch.model.SeriesData;
 import jeffersonrolino.com.github.screenmatch.service.DataConverter;
@@ -8,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class Main {
@@ -24,39 +23,40 @@ public class Main {
     }
 
     public void showMenu(){
-//        Scanner scanner = new Scanner(System.in);
-//
-//        System.out.println("Digite o nome da série para busca: ");
-//        String query = scanner.nextLine().toLowerCase().replace(' ', '+');
-//
-//        String queryString = API_ADDRESS + query + "&apikey=" + apikey;
-//        QueryApi queryApi = new QueryApi();
-//        String json = queryApi.retrieveData(queryString);
-//
-//        DataConverter dataConverter = new DataConverter();
-//        SeriesData seriesData = dataConverter.convertData(json, SeriesData.class);
-//
-//		List<SeasonData> seasons = new ArrayList<>();
-//
-//		for (int i = 0; i < seriesData.totalSeasons(); i++) {
-//			String jsonSeasons = queryApi.retrieveData(API_ADDRESS + query + "&Season=" + String.valueOf(i + 1) + "&apikey=" + apikey);
-//			SeasonData seasonData = dataConverter.convertData(jsonSeasons, SeasonData.class);
-//			seasons.add(seasonData);
-//		}
-//
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Digite o nome da série para busca: ");
+        String query = scanner.nextLine().toLowerCase().replace(' ', '+');
+
+        String queryString = API_ADDRESS + query + "&apikey=" + apikey;
+        QueryApi queryApi = new QueryApi();
+        String json = queryApi.retrieveData(queryString);
+
+        DataConverter dataConverter = new DataConverter();
+        SeriesData seriesData = dataConverter.convertData(json, SeriesData.class);
+
+		List<SeasonData> seasons = new ArrayList<>();
+
+		for (int i = 0; i < seriesData.totalSeasons(); i++) {
+			String jsonSeasons = queryApi.retrieveData(API_ADDRESS + query + "&Season=" + String.valueOf(i + 1) + "&apikey=" + apikey);
+			SeasonData seasonData = dataConverter.convertData(jsonSeasons, SeasonData.class);
+			seasons.add(seasonData);
+		}
+
 //		seasons.forEach(System.out::println);
 
-        // Printing all Episodes for all seasons
-//        seasons.forEach(season -> season.episodes().forEach(episode -> System.out.println(episode.title())));
+//      Printing all Episodes for all seasons
+        seasons.forEach(season -> season.episodes().forEach(episode -> System.out.println(episode.title())));
 
-        // Working with streams
-        List<String> nomes = Arrays.asList("Jacque", "Iasmin", "Paulo", "Rodrigo", "Nico");
+        List<EpisodeData> episodes = seasons.stream()
+                .flatMap(season -> season.episodes().stream())
+                .collect(Collectors.toList());
 
-        nomes.stream()
-                .sorted()
-                .limit(3)
-                .filter(name -> name.startsWith("N"))
-                .map(name -> name.toUpperCase())
+        System.out.println("\n Top 5 Episodes");
+        episodes.stream()
+                .filter(episode -> !episode.review().equalsIgnoreCase("N/A"))
+                .sorted(Comparator.comparing(EpisodeData::review).reversed())
+                .limit(5)
                 .forEach(System.out::println);
     }
 }
