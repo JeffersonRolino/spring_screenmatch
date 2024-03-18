@@ -19,6 +19,7 @@ public class Main {
     DataConverter dataConverter = new DataConverter();
     private final String API_ADDRESS = "https://www.omdbapi.com/?t=";
     private final String apikey;
+    private List<SeriesData> seriesDataList = new ArrayList<>();
 
     @Autowired
     public Main(@Value("${apikey}") String apikey) {
@@ -26,34 +27,44 @@ public class Main {
     }
 
     public void showMenu() {
-        String menu = """
+        int option = 42;
+
+        while (option != 0){
+            String menu = """
+                
                 1 - Buscar séries
                 2 - Buscar episódios
+                3 - Listar Séries Buscadas
                                 
                 0 - Sair
                 """;
 
-        System.out.println(menu);
-        var option = scanner.nextInt();
-        scanner.nextLine();
+            System.out.println(menu);
+            option = scanner.nextInt();
+            scanner.nextLine();
 
-        switch (option) {
-            case 1:
-                searchSeries();
-                break;
-            case 2:
-                searchEpisodeBySeries();
-                break;
-            case 0:
-                System.out.println("Saindo...");
-                break;
-            default:
-                System.out.println("Opção inválida...");
+            switch (option) {
+                case 1:
+                    searchSeries();
+                    break;
+                case 2:
+                    searchEpisodeBySeries();
+                    break;
+                case 3:
+                    showSeries();
+                    break;
+                case 0:
+                    System.out.println("Saindo...");
+                    break;
+                default:
+                    System.out.println("Opção inválida...");
+            }
         }
     }
 
     private void searchSeries(){
         SeriesData seriesData = getSeriesData();
+        seriesDataList.add(seriesData);
         System.out.println(seriesData);
     }
 
@@ -74,5 +85,10 @@ public class Main {
             seasons.add(seasonData);
         }
         seasons.forEach(System.out::println);
+    }
+
+    private void showSeries(){
+        System.out.println();
+        seriesDataList.forEach(System.out::println);
     }
 }
