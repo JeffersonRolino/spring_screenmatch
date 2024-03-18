@@ -1,6 +1,7 @@
 package jeffersonrolino.com.github.screenmatch.main;
 
 import jeffersonrolino.com.github.screenmatch.model.SeasonData;
+import jeffersonrolino.com.github.screenmatch.model.Series;
 import jeffersonrolino.com.github.screenmatch.model.SeriesData;
 import jeffersonrolino.com.github.screenmatch.service.DataConverter;
 import jeffersonrolino.com.github.screenmatch.service.QueryApi;
@@ -9,8 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 @Component
 public class Main {
@@ -20,6 +23,7 @@ public class Main {
     private final String API_ADDRESS = "https://www.omdbapi.com/?t=";
     private final String apikey;
     private List<SeriesData> seriesDataList = new ArrayList<>();
+    private List<Series> series = new ArrayList<>();
 
     @Autowired
     public Main(@Value("${apikey}") String apikey) {
@@ -88,7 +92,11 @@ public class Main {
     }
 
     private void showSeries(){
-        System.out.println();
-        seriesDataList.forEach(System.out::println);
+        series = seriesDataList.stream()
+                .map(seriesData -> new Series(seriesData))
+                .collect(Collectors.toList());
+        series.stream()
+                .sorted(Comparator.comparing(Series::getGenre))
+                .forEach(System.out::println);
     }
 }
