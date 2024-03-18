@@ -1,7 +1,5 @@
 package jeffersonrolino.com.github.screenmatch.main;
 
-import jeffersonrolino.com.github.screenmatch.model.Episode;
-import jeffersonrolino.com.github.screenmatch.model.EpisodeData;
 import jeffersonrolino.com.github.screenmatch.model.SeasonData;
 import jeffersonrolino.com.github.screenmatch.model.SeriesData;
 import jeffersonrolino.com.github.screenmatch.service.DataConverter;
@@ -10,83 +8,71 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 @Component
 public class Main {
-    private final String apikey;
+    Scanner scanner = new Scanner(System.in);
+    QueryApi queryApi = new QueryApi();
+    DataConverter dataConverter = new DataConverter();
     private final String API_ADDRESS = "https://www.omdbapi.com/?t=";
+    private final String apikey;
 
     @Autowired
     public Main(@Value("${apikey}") String apikey) {
         this.apikey = apikey;
     }
 
-    public void showMenu(){
-        Scanner scanner = new Scanner(System.in);
+    public void showMenu() {
+        String menu = """
+                1 - Buscar séries
+                2 - Buscar episódios
+                                
+                0 - Sair
+                """;
 
+        System.out.println(menu);
+        var option = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (option) {
+            case 1:
+                searchSeries();
+                break;
+            case 2:
+                searchEpisodeBySeries();
+                break;
+            case 0:
+                System.out.println("Saindo...");
+                break;
+            default:
+                System.out.println("Opção inválida...");
+        }
+    }
+
+    private void searchSeries(){
+        SeriesData seriesData = getSeriesData();
+        System.out.println(seriesData);
+    }
+
+    private SeriesData getSeriesData(){
         System.out.println("Digite o nome da série para busca: ");
         String query = scanner.nextLine().toLowerCase().replace(' ', '+');
-
         String queryString = API_ADDRESS + query + "&apikey=" + apikey;
-        QueryApi queryApi = new QueryApi();
         String json = queryApi.retrieveData(queryString);
+        return dataConverter.convertData(json, SeriesData.class);
+    }
 
-        DataConverter dataConverter = new DataConverter();
-        SeriesData seriesData = dataConverter.convertData(json, SeriesData.class);
-
-		List<SeasonData> seasons = new ArrayList<>();
-
-		for (int i = 0; i < seriesData.totalSeasons(); i++) {
-			String jsonSeasons = queryApi.retrieveData(API_ADDRESS + query + "&Season=" + String.valueOf(i + 1) + "&apikey=" + apikey);
-			SeasonData seasonData = dataConverter.convertData(jsonSeasons, SeasonData.class);
-			seasons.add(seasonData);
-		}
-
-//		seasons.forEach(System.out::println);
-
-//      Printing all Episodes for all seasons
-//        seasons.forEach(season -> season.episodes().forEach(episode -> System.out.println(episode.title())));
-
-        List<EpisodeData> episodesData = seasons.stream()
-                .flatMap(season -> season.episodes().stream())
-                .collect(Collectors.toList());
-
-        System.out.println("\n Top 10 Episodes");
-        episodesData.stream()
-                .filter(episode -> !episode.review().equalsIgnoreCase("N/A"))
-                .peek(episodeData -> System.out.println("FILTER(N/A): " + episodeData))
-                .sorted(Comparator.comparing(EpisodeData::review).reversed())
-                .peek(episodeData -> System.out.println("SORTED: " + episodeData))
-                .limit(10)
-                .peek(episodeData -> System.out.println("LIMIT 10: " + episodeData))
-                .map(episodeData -> episodeData.title().toUpperCase())
-                .peek(episodeData -> System.out.println("MAP: " + episodeData))
-                .forEach(System.out::println);
-
-//        List<Episode> episodes = seasons.stream()
-//                .flatMap(season -> season.episodes().stream().map(episodeData -> new Episode(season.number(), episodeData)))
-//                .collect(Collectors.toList());
-
-
-//        episodes.forEach(System.out::println);
-//
-//        System.out.println("A partir de que ano você deseja ver os episódios?");
-//        int year = scanner.nextInt();
-//        scanner.nextLine();
-//
-//        LocalDate searchDate = LocalDate.of(year, 1, 1);
-//
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-//        episodes.stream()
-//                .filter(episode -> episode != null && episode.getReleaseDate().isAfter(searchDate))
-//                .forEach(episode -> System.out.println(
-//                    "Season: " + episode.getSeason() + " " +
-//                            "Episode: " + episode.getTitle() + " " +
-//                            "Data laçamento: " + episode.getReleaseDate().format(dateTimeFormatter)
-//                ));
+    private void searchEpisodeBySeries(){
+        SeriesData seriesData = getSeriesData();
+        List<SeasonData> seasons = new ArrayList<>();
+        for(int i = 0; i < seriesData.totalSeasons(); i++){
+            String jsonSeasons = queryApi.retrieveData(API_ADDRESS + seriesData.title().replace(" ", "+") + "&Season=" + String.valueOf(i + 1) + "&apikey=" + apikey);
+            SeasonData seasonData = dataConverter.convertData(jsonSeasons, SeasonData.class);
+            seasons.add(seasonData);
+        }
+        seasons.forEach(System.out::println);
     }
 }

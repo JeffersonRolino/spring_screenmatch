@@ -20,8 +20,6 @@ public class QueryApi {
             throw new RuntimeException(exception);
         }
 
-        String json = response.body();
-        return json;
+        return response.body();
     }
-
 }
