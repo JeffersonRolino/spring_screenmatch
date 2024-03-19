@@ -95,7 +95,7 @@ public class Main {
 
     private void showSeries(){
         series = seriesDataList.stream()
-                .map(seriesData -> new Series(seriesData))
+                .map(seriesData -> new Series(seriesData, openAIkey))
                 .collect(Collectors.toList());
         series.stream()
                 .sorted(Comparator.comparing(Series::getGenre))

@@ -8,7 +8,7 @@ public class QueryChatGPT {
     public static String getTranslation(String text, String key){
         OpenAiService service = new OpenAiService(key);
         CompletionRequest request = CompletionRequest.builder()
-                .model("text-davinci-003")
+                .model("gpt-3.5-turbo-instruct")
                 .prompt("traduza para o português o texto: " + text)
                 .maxTokens(1000)
                 .temperature(0.7)

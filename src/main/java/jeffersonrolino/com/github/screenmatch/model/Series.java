@@ -1,5 +1,7 @@
 package jeffersonrolino.com.github.screenmatch.model;
 
+import jeffersonrolino.com.github.screenmatch.service.QueryChatGPT;
+
 import java.util.OptionalDouble;
 
 public class Series {
@@ -11,14 +13,14 @@ public class Series {
     private String poster;
     private String synopses;
 
-    public Series(SeriesData seriesData){
+    public Series(SeriesData seriesData, String openAIkey){
         this.title = seriesData.title();
         this.totalSeasons = seriesData.totalSeasons();
         this.review = OptionalDouble.of(Double.parseDouble(seriesData.review())).orElse(0.0);
         this.genre = Category.fromString(seriesData.genre().split(",")[0].trim());
         this.actors = seriesData.actors();
         this.poster = seriesData.poster();
-        this.synopses = seriesData.synopses();
+        this.synopses = QueryChatGPT.getTranslation(seriesData.synopses().trim(), openAIkey);
     }
 
     public String getTitle() {
