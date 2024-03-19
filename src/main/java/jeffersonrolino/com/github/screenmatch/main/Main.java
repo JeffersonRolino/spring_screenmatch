@@ -22,14 +22,12 @@ public class Main {
     DataConverter dataConverter = new DataConverter();
     private final String API_ADDRESS = "https://www.omdbapi.com/?t=";
     private final String apikey;
-    private final String openAIkey;
     private List<SeriesData> seriesDataList = new ArrayList<>();
     private List<Series> series = new ArrayList<>();
 
     @Autowired
-    public Main(@Value("${apikey}") String apikey, @Value("${openAIkey}") String openAIkey) {
+    public Main(@Value("${apikey}") String apikey) {
         this.apikey = apikey;
-        this.openAIkey = openAIkey;
     }
 
     public void showMenu() {
@@ -95,7 +93,7 @@ public class Main {
 
     private void showSeries(){
         series = seriesDataList.stream()
-                .map(seriesData -> new Series(seriesData, openAIkey))
+                .map(seriesData -> new Series(seriesData))
                 .collect(Collectors.toList());
         series.stream()
                 .sorted(Comparator.comparing(Series::getGenre))

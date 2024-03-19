@@ -12,9 +12,6 @@ public class ScreenmatchApplication implements CommandLineRunner {
 	@Value("${apikey}")
 	String apikey;
 
-	@Value("${openAIkey}")
-	String openAIkey;
-
 
 	public static void main(String[] args) {
 		SpringApplication.run(ScreenmatchApplication.class, args);
@@ -22,7 +19,7 @@ public class ScreenmatchApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Main main = new Main(apikey, openAIkey);
+		Main main = new Main(apikey);
 		main.showMenu();
 	}
 }

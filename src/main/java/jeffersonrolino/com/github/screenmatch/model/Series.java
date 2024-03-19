@@ -13,14 +13,14 @@ public class Series {
     private String poster;
     private String synopses;
 
-    public Series(SeriesData seriesData, String openAIkey){
+    public Series(SeriesData seriesData){
         this.title = seriesData.title();
         this.totalSeasons = seriesData.totalSeasons();
         this.review = OptionalDouble.of(Double.parseDouble(seriesData.review())).orElse(0.0);
         this.genre = Category.fromString(seriesData.genre().split(",")[0].trim());
         this.actors = seriesData.actors();
         this.poster = seriesData.poster();
-        this.synopses = QueryChatGPT.getTranslation(seriesData.synopses().trim(), openAIkey);
+        this.synopses = seriesData.synopses();
     }
 
     public String getTitle() {
