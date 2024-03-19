@@ -22,12 +22,14 @@ public class Main {
     DataConverter dataConverter = new DataConverter();
     private final String API_ADDRESS = "https://www.omdbapi.com/?t=";
     private final String apikey;
+    private final String openAIkey;
     private List<SeriesData> seriesDataList = new ArrayList<>();
     private List<Series> series = new ArrayList<>();
 
     @Autowired
-    public Main(@Value("${apikey}") String apikey) {
+    public Main(@Value("${apikey}") String apikey, @Value("${openAIkey}") String openAIkey) {
         this.apikey = apikey;
+        this.openAIkey = openAIkey;
     }
 
     public void showMenu() {
