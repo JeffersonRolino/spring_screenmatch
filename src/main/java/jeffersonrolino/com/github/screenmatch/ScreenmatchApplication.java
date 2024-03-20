@@ -10,13 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ScreenmatchApplication implements CommandLineRunner {
-
-	@Value("${apikey}")
-	String apikey;
-
 	@Autowired
 	private SeriesRepository repository;
-
 
 	public static void main(String[] args) {
 		SpringApplication.run(ScreenmatchApplication.class, args);
@@ -24,7 +19,7 @@ public class ScreenmatchApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Main main = new Main(apikey, repository);
+		Main main = new Main(repository);
 		main.showMenu();
 	}
 }

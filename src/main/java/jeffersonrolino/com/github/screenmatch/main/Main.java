@@ -1,5 +1,6 @@
 package jeffersonrolino.com.github.screenmatch.main;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import jeffersonrolino.com.github.screenmatch.model.SeasonData;
 import jeffersonrolino.com.github.screenmatch.model.Series;
 import jeffersonrolino.com.github.screenmatch.model.SeriesData;
@@ -16,20 +17,18 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-@Component
 public class Main {
     Scanner scanner = new Scanner(System.in);
     QueryApi queryApi = new QueryApi();
     DataConverter dataConverter = new DataConverter();
+    Dotenv dotenv = Dotenv.load();
     private final String API_ADDRESS = "https://www.omdbapi.com/?t=";
-    private final String apikey;
+    private final String apikey = dotenv.get("API_KEY");
     private List<SeriesData> seriesDataList = new ArrayList<>();
     private List<Series> series = new ArrayList<>();
     private SeriesRepository repository;
 
-    @Autowired
-    public Main(@Value("${apikey}") String apikey, SeriesRepository seriesRepository) {
-        this.apikey = apikey;
+    public Main(SeriesRepository seriesRepository) {
         this.repository = seriesRepository;
     }
 
@@ -98,9 +97,7 @@ public class Main {
     }
 
     private void showSeries(){
-        series = seriesDataList.stream()
-                .map(seriesData -> new Series(seriesData))
-                .collect(Collectors.toList());
+        series = repository.findAll();
         series.stream()
                 .sorted(Comparator.comparing(Series::getGenre))
                 .forEach(System.out::println);
