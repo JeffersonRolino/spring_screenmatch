@@ -1,17 +1,26 @@
 package jeffersonrolino.com.github.screenmatch.model;
 
+import jakarta.persistence.*;
 import jeffersonrolino.com.github.screenmatch.service.QueryChatGPT;
 
 import java.util.OptionalDouble;
 
+@Entity
 public class Series {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private Integer totalSeasons;
     private double review;
+    @Enumerated(EnumType.STRING)
     private Category genre;
     private String actors;
     private String poster;
     private String synopses;
+
+    public Series() {
+    }
 
     public Series(SeriesData seriesData){
         this.title = seriesData.title();
@@ -21,6 +30,14 @@ public class Series {
         this.actors = seriesData.actors();
         this.poster = seriesData.poster();
         this.synopses = seriesData.synopses();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
