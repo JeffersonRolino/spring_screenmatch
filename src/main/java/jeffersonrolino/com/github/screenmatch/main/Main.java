@@ -3,6 +3,7 @@ package jeffersonrolino.com.github.screenmatch.main;
 import jeffersonrolino.com.github.screenmatch.model.SeasonData;
 import jeffersonrolino.com.github.screenmatch.model.Series;
 import jeffersonrolino.com.github.screenmatch.model.SeriesData;
+import jeffersonrolino.com.github.screenmatch.repository.SeriesRepository;
 import jeffersonrolino.com.github.screenmatch.service.DataConverter;
 import jeffersonrolino.com.github.screenmatch.service.QueryApi;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,12 @@ public class Main {
     private final String apikey;
     private List<SeriesData> seriesDataList = new ArrayList<>();
     private List<Series> series = new ArrayList<>();
+    private SeriesRepository repository;
 
     @Autowired
-    public Main(@Value("${apikey}") String apikey) {
+    public Main(@Value("${apikey}") String apikey, SeriesRepository seriesRepository) {
         this.apikey = apikey;
+        this.repository = seriesRepository;
     }
 
     public void showMenu() {
@@ -68,8 +71,11 @@ public class Main {
 
     private void searchSeries(){
         SeriesData seriesData = getSeriesData();
-        seriesDataList.add(seriesData);
+        Series serie = new Series(seriesData);
+//        seriesDataList.add(seriesData);
+        repository.save(serie);
         System.out.println(seriesData);
+
     }
 
     private SeriesData getSeriesData(){

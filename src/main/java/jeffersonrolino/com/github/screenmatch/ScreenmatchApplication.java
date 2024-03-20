@@ -1,6 +1,8 @@
 package jeffersonrolino.com.github.screenmatch;
 
 import jeffersonrolino.com.github.screenmatch.main.Main;
+import jeffersonrolino.com.github.screenmatch.repository.SeriesRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,6 +14,9 @@ public class ScreenmatchApplication implements CommandLineRunner {
 	@Value("${apikey}")
 	String apikey;
 
+	@Autowired
+	private SeriesRepository repository;
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(ScreenmatchApplication.class, args);
@@ -19,7 +24,7 @@ public class ScreenmatchApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Main main = new Main(apikey);
+		Main main = new Main(apikey, repository);
 		main.showMenu();
 	}
 }

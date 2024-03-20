@@ -3,6 +3,8 @@ package jeffersonrolino.com.github.screenmatch.model;
 import jakarta.persistence.*;
 import jeffersonrolino.com.github.screenmatch.service.QueryChatGPT;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.OptionalDouble;
 
 @Entity
@@ -18,6 +20,8 @@ public class Series {
     private String actors;
     private String poster;
     private String synopses;
+    @Transient
+    private List<Episode> episodes = new ArrayList<>();
 
     public Series() {
     }
@@ -94,6 +98,14 @@ public class Series {
 
     public void setSynopses(String synopses) {
         this.synopses = synopses;
+    }
+
+    public List<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(List<Episode> episodes) {
+        this.episodes = episodes;
     }
 
     @Override
