@@ -1,15 +1,25 @@
 package jeffersonrolino.com.github.screenmatch.model;
 
+import jakarta.persistence.*;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+@Entity
+@Table(name="episodes")
 public class Episode {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private Integer episode;
     private Double review;
     private LocalDate releaseDate;
     private Integer season;
+
+    @ManyToOne
+    private Series series;
 
     public Episode() {
     }
@@ -28,6 +38,14 @@ public class Episode {
         } catch (DateTimeParseException exception){
             this.releaseDate = null;
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -68,6 +86,14 @@ public class Episode {
 
     public void setSeason(Integer season) {
         this.season = season;
+    }
+
+    public Series getSeries() {
+        return series;
+    }
+
+    public void setSeries(Series series) {
+        this.series = series;
     }
 
     @Override
