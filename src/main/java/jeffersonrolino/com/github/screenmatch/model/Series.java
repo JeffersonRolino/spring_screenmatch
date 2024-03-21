@@ -20,7 +20,7 @@ public class Series {
     private String actors;
     private String poster;
     private String synopses;
-    @OneToMany(mappedBy = "series", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "series", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Episode> episodes = new ArrayList<>();
 
     public Series() {
@@ -105,6 +105,7 @@ public class Series {
     }
 
     public void setEpisodes(List<Episode> episodes) {
+        episodes.forEach(e -> e.setSeries(this));
         this.episodes = episodes;
     }
 
@@ -116,6 +117,7 @@ public class Series {
                 ", review=" + review +
                 ", actors='" + actors + '\'' +
                 ", poster='" + poster + '\'' +
-                ", synopses='" + synopses + '\'';
+                ", synopses='" + synopses + '\'' +
+                ", episodes='" + episodes + '\'';
     }
 }
