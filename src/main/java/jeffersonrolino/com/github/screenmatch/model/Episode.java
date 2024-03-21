@@ -2,7 +2,6 @@ package jeffersonrolino.com.github.screenmatch.model;
 
 import jakarta.persistence.*;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 

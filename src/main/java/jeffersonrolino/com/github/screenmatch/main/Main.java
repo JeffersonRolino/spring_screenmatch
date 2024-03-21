@@ -1,20 +1,15 @@
 package jeffersonrolino.com.github.screenmatch.main;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import jeffersonrolino.com.github.screenmatch.model.Episode;
 import jeffersonrolino.com.github.screenmatch.model.SeasonData;
 import jeffersonrolino.com.github.screenmatch.model.Series;
 import jeffersonrolino.com.github.screenmatch.model.SeriesData;
 import jeffersonrolino.com.github.screenmatch.repository.SeriesRepository;
 import jeffersonrolino.com.github.screenmatch.service.DataConverter;
 import jeffersonrolino.com.github.screenmatch.service.QueryApi;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -25,7 +20,7 @@ public class Main {
     private final String API_ADDRESS = "https://www.omdbapi.com/?t=";
     private final String apikey = dotenv.get("API_KEY");
     private List<SeriesData> seriesDataList = new ArrayList<>();
-    private List<Series> series = new ArrayList<>();
+    private List<Series> seriesList = new ArrayList<>();
     private SeriesRepository repository;
 
     public Main(SeriesRepository seriesRepository) {
@@ -86,19 +81,40 @@ public class Main {
     }
 
     private void searchEpisodeBySeries(){
-        SeriesData seriesData = getSeriesData();
-        List<SeasonData> seasons = new ArrayList<>();
-        for(int i = 0; i < seriesData.totalSeasons(); i++){
-            String jsonSeasons = queryApi.retrieveData(API_ADDRESS + seriesData.title().replace(" ", "+") + "&Season=" + String.valueOf(i + 1) + "&apikey=" + apikey);
-            SeasonData seasonData = dataConverter.convertData(jsonSeasons, SeasonData.class);
-            seasons.add(seasonData);
+        showSeries();
+        System.out.println("Escolha uma série pelo nome: ");
+        String seriesName = scanner.nextLine();
+
+        Optional<Series> series = seriesList.stream()
+                .filter(s -> s.getTitle().toLowerCase().contains(seriesName.toLowerCase()))
+                .findFirst();
+
+        if(series.isPresent()){
+            var foundSeries = series.get();
+            List<SeasonData> seasons = new ArrayList<>();
+            for(int i = 0; i < foundSeries.getTotalSeasons(); i++){
+                String jsonSeasons = queryApi.retrieveData(API_ADDRESS + foundSeries.getTitle().replace(" ", "+") + "&Season=" + String.valueOf(i + 1) + "&apikey=" + apikey);
+                SeasonData seasonData = dataConverter.convertData(jsonSeasons, SeasonData.class);
+                seasons.add(seasonData);
+            }
+            seasons.forEach(System.out::println);
+
+            List<Episode> episodesList = seasons.stream()
+                    .flatMap(d -> d.episodes().stream()
+                            .map(e -> new Episode(d.number(), e)))
+                    .collect(Collectors.toList());
+
+            foundSeries.setEpisodes(episodesList);
+            repository.save(foundSeries);
         }
-        seasons.forEach(System.out::println);
+        else {
+            System.out.println("Série não encontrada...");
+        }
     }
 
     private void showSeries(){
-        series = repository.findAll();
-        series.stream()
+        seriesList = repository.findAll();
+        seriesList.stream()
                 .sorted(Comparator.comparing(Series::getGenre))
                 .forEach(System.out::println);
     }
