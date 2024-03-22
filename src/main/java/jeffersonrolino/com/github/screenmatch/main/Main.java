@@ -37,6 +37,7 @@ public class Main {
                 2 - Buscar episódios
                 3 - Listar Séries Buscadas
                 4 - Buscar Série por Título
+                5 - Buscar Séries por ator
                                 
                 0 - Sair
                 """;
@@ -57,6 +58,9 @@ public class Main {
                     break;
                 case 4:
                     findSeriesByTitle();
+                    break;
+                case 5:
+                    findSeriesByActor();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -89,9 +93,7 @@ public class Main {
         System.out.println("Escolha uma série pelo nome: ");
         String seriesName = scanner.nextLine();
 
-        Optional<Series> series = seriesList.stream()
-                .filter(s -> s.getTitle().toLowerCase().contains(seriesName.toLowerCase()))
-                .findFirst();
+        Optional<Series> series = repository.findByTitleContainingIgnoreCase(seriesName);
 
         if(series.isPresent()){
             var foundSeries = series.get();
@@ -125,7 +127,7 @@ public class Main {
 
     private void findSeriesByTitle() {
         System.out.println("Escolha uma série pelo nome: ");
-        var seriesName = scanner.nextLine();
+        String seriesName = scanner.nextLine();
 
         Optional<Series> searchedSeries = repository.findByTitleContainingIgnoreCase(seriesName);
 
@@ -136,5 +138,17 @@ public class Main {
         else {
             System.out.println("Série não encontrada...");
         }
+    }
+
+    private void findSeriesByActor() {
+        System.out.println("Qual o nome do Ator ou Atriz?");
+        String actorName = scanner.nextLine();
+        System.out.println("Avaliações à partir de que valor?");
+        double review = scanner.nextDouble();
+
+        List<Series> searchedSeries = repository.findByActorsContainingIgnoreCaseAndReviewGreaterThanEqual(actorName, review);
+
+        System.out.println("\nSéries em que " + actorName + " trabalhou: ");
+        searchedSeries.forEach(s -> System.out.println(s.getTitle() + ": " + s.getReview()));
     }
 }
