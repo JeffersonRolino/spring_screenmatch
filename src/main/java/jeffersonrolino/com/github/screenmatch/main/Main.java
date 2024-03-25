@@ -1,10 +1,7 @@
 package jeffersonrolino.com.github.screenmatch.main;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import jeffersonrolino.com.github.screenmatch.model.Episode;
-import jeffersonrolino.com.github.screenmatch.model.SeasonData;
-import jeffersonrolino.com.github.screenmatch.model.Series;
-import jeffersonrolino.com.github.screenmatch.model.SeriesData;
+import jeffersonrolino.com.github.screenmatch.model.*;
 import jeffersonrolino.com.github.screenmatch.repository.SeriesRepository;
 import jeffersonrolino.com.github.screenmatch.service.DataConverter;
 import jeffersonrolino.com.github.screenmatch.service.QueryApi;
@@ -163,5 +160,13 @@ public class Main {
     private void findTop5Series() {
         List<Series> topSeries = repository.findTop5ByOrderByReviewDesc();
         topSeries.forEach(s -> System.out.println(s.getTitle() + ": " + s.getReview()));
+    }
+
+    private void findSeriesByCategory(){
+        System.out.println("Deseja buscar séries de que categoria/gênero? ");
+        var categoryInput = scanner.nextLine();
+        Category category = Category.fromPorgueseCategory(categoryInput);
+        List<Series> seriesByCategory = repository.findByGenre(category);
+        seriesByCategory.forEach(s -> System.out.println(s.getGenre() + " - " + s.getTitle() + ": " + s.getReview()));
     }
 }
