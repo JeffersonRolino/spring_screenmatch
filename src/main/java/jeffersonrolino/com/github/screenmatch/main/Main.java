@@ -37,6 +37,7 @@ public class Main {
                 5 - Buscar Séries por ator
                 6 - Top 5 Séries
                 7 - Buscar séries por categoria
+                8 - Buscar por tamanho da Temporada
                                 
                 0 - Sair
                 """;
@@ -66,6 +67,9 @@ public class Main {
                     break;
                 case 7:
                     findSeriesByCategory();
+                    break;
+                case 8:
+                    findByNumberOfSeasons();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -168,5 +172,15 @@ public class Main {
         Category category = Category.fromPorgueseCategory(categoryInput);
         List<Series> seriesByCategory = repository.findByGenre(category);
         seriesByCategory.forEach(s -> System.out.println(s.getGenre() + " - " + s.getTitle() + ": " + s.getReview()));
+    }
+
+    private void findByNumberOfSeasons() {
+        System.out.println("Digite o número de temporadas: ");
+        int numberOfSeasons = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Avaliações à partir de que valor?");
+        double review = scanner.nextDouble();
+        List<Series> seriesByNumberOfSeasons = repository.findByTotalSeasonsLessThanEqualAndReviewGreaterThanEqual(numberOfSeasons, review);
+        seriesByNumberOfSeasons.forEach(s -> System.out.println(s.getGenre() + " - " + s.getTitle() + ": " + s.getReview()));
     }
 }
