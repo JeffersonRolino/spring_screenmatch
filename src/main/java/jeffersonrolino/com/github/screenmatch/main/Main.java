@@ -180,7 +180,8 @@ public class Main {
         scanner.nextLine();
         System.out.println("Avaliações à partir de que valor?");
         double review = scanner.nextDouble();
-        List<Series> seriesByNumberOfSeasons = repository.findByTotalSeasonsLessThanEqualAndReviewGreaterThanEqual(numberOfSeasons, review);
+//        List<Series> seriesByNumberOfSeasons = repository.findByTotalSeasonsLessThanEqualAndReviewGreaterThanEqual(numberOfSeasons, review);
+        List<Series> seriesByNumberOfSeasons = repository.seriesBySeasonAndReview(numberOfSeasons, review);
         seriesByNumberOfSeasons.forEach(s -> System.out.println(s.getGenre() + " - " + s.getTitle() + ": " + s.getReview()));
     }
 }
