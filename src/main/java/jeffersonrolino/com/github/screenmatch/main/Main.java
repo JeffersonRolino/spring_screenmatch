@@ -40,6 +40,7 @@ public class Main {
                 8 - Buscar por tamanho da Temporada
                 9 - Buscar episódio por trecho
                 10 - Top 5 Episódios por Série
+                11 - Buscar episódios à partir de uma Data
                                 
                 0 - Sair
                 """;
@@ -78,6 +79,9 @@ public class Main {
                     break;
                 case 10:
                     findTop5EpisodesBySeries();
+                    break;
+                case 11:
+                    findEpisodesAfterDate();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -212,6 +216,23 @@ public class Main {
                     System.out.printf("Série: %s - Temporada %s - Episódio %s - %s - Avaliação: %.2f\n",
                             e.getSeries().getTitle(), e.getSeason(),
                             e.getEpisode(), e.getTitle(), e.getReview())
+            );
+        }
+    }
+
+    private void findEpisodesAfterDate() {
+        findSeriesByTitle();
+        if(searchedSeries.isPresent()){
+            Series series = searchedSeries.get();
+            System.out.println("Digite o ano limite de lançamento");
+            var releasedYear = scanner.nextInt();
+            scanner.nextLine();
+
+            List<Episode> episodes = repository.episodesBySeriesAndYear(series, releasedYear);
+            episodes.forEach(e ->
+                    System.out.printf("Série: %s - Temporada %s - Episódio %s - %s - Ano: %s\n",
+                            e.getSeries().getTitle(), e.getSeason(),
+                            e.getEpisode(), e.getTitle(), e.getReleaseDate())
             );
         }
     }
