@@ -1,6 +1,7 @@
 package jeffersonrolino.com.github.screenmatch.repository;
 
 import jeffersonrolino.com.github.screenmatch.model.Category;
+import jeffersonrolino.com.github.screenmatch.model.Episode;
 import jeffersonrolino.com.github.screenmatch.model.Series;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
 
     @Query(value = "select s from Series s WHERE s.totalSeasons <= :totalSeasons AND s.review >= :review")
     List<Series> seriesBySeasonAndReview(int totalSeasons, Double review);
+
+    @Query("SELECT e FROM Series s JOIN s.episodes e WHERE e.title LIKE %:episodeExcerpt%")
+    List<Episode> episodesByExcerpt(String episodeExcerpt);
 }

@@ -38,6 +38,7 @@ public class Main {
                 6 - Top 5 Séries
                 7 - Buscar séries por categoria
                 8 - Buscar por tamanho da Temporada
+                9 - Buscar episódio por trecho
                                 
                 0 - Sair
                 """;
@@ -70,6 +71,9 @@ public class Main {
                     break;
                 case 8:
                     findByNumberOfSeasons();
+                    break;
+                case 9:
+                    findEpisodeByExcerpt();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -183,5 +187,15 @@ public class Main {
 //        List<Series> seriesByNumberOfSeasons = repository.findByTotalSeasonsLessThanEqualAndReviewGreaterThanEqual(numberOfSeasons, review);
         List<Series> seriesByNumberOfSeasons = repository.seriesBySeasonAndReview(numberOfSeasons, review);
         seriesByNumberOfSeasons.forEach(s -> System.out.println(s.getGenre() + " - " + s.getTitle() + ": " + s.getReview()));
+    }
+
+    private void findEpisodeByExcerpt() {
+        System.out.println("Qual o nome do Episódio para busca?");
+        String episodeExcerpt = scanner.nextLine();
+        List<Episode> foundEpisodes = repository.episodesByExcerpt(episodeExcerpt);
+        foundEpisodes.forEach(e ->
+                System.out.printf("Série: %s - Temporada %s - Episódio %s - %s\n",
+                        e.getSeries().getTitle(), e.getSeason(),
+                        e.getEpisode(), e.getTitle()));
     }
 }
