@@ -16,7 +16,6 @@ public class Main {
     Dotenv dotenv = Dotenv.load();
     private final String API_ADDRESS = "https://www.omdbapi.com/?t=";
     private final String apikey = dotenv.get("API_KEY");
-    private List<SeriesData> seriesDataList = new ArrayList<>();
     private List<Series> seriesList = new ArrayList<>();
     private SeriesRepository repository;
     public Main(SeriesRepository seriesRepository) {
