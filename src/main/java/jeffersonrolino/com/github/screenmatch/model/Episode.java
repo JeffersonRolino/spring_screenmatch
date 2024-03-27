@@ -16,7 +16,6 @@ public class Episode {
     private Double review;
     private LocalDate releaseDate;
     private Integer season;
-
     @ManyToOne
     private Series series;
 
