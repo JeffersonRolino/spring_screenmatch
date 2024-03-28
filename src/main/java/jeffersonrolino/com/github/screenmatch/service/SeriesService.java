@@ -24,6 +24,10 @@ public class SeriesService {
 
     }
 
+    public List<SeriesDTO> getReleases() {
+        return convertSeriesToSeriesDTO(repository.findTop5ByOrderByEpisodesReleaseDateDesc());
+    }
+
     private List<SeriesDTO> convertSeriesToSeriesDTO(List<Series> series){
         return series.stream()
                 .map(s -> new SeriesDTO(s.getId(), s.getTitle(), s.getTotalSeasons(), s.getReview(), s.getGenre(), s.getActors(), s.getPoster(), s.getSynopses()))
