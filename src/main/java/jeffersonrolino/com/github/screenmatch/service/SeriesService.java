@@ -2,6 +2,7 @@ package jeffersonrolino.com.github.screenmatch.service;
 
 import jeffersonrolino.com.github.screenmatch.dto.EpisodeDTO;
 import jeffersonrolino.com.github.screenmatch.dto.SeriesDTO;
+import jeffersonrolino.com.github.screenmatch.model.Category;
 import jeffersonrolino.com.github.screenmatch.model.Series;
 import jeffersonrolino.com.github.screenmatch.repository.SeriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,5 +62,10 @@ public class SeriesService {
                 .stream()
                 .map(e -> new EpisodeDTO(e.getEpisode(), e.getTitle(), e.getSeason()))
                 .collect(Collectors.toList());
+    }
+
+    public List<SeriesDTO> getSeriesByGenre(String nomeGenero) {
+        Category category = Category.fromPorgueseCategory(nomeGenero);
+        return convertSeriesToSeriesDTO(repository.findByGenre(category));
     }
 }
