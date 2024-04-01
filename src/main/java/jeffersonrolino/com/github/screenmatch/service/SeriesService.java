@@ -1,5 +1,6 @@
 package jeffersonrolino.com.github.screenmatch.service;
 
+import jeffersonrolino.com.github.screenmatch.dto.EpisodeDTO;
 import jeffersonrolino.com.github.screenmatch.dto.SeriesDTO;
 import jeffersonrolino.com.github.screenmatch.model.Series;
 import jeffersonrolino.com.github.screenmatch.repository.SeriesRepository;
@@ -22,7 +23,6 @@ public class SeriesService {
 
     public List<SeriesDTO> getTop5Series() {
         return convertSeriesToSeriesDTO(repository.findTop5ByOrderByReviewDesc());
-
     }
 
     public List<SeriesDTO> getReleases() {
@@ -40,6 +40,18 @@ public class SeriesService {
         if(serie.isPresent()){
             Series s = serie.get();
             return new SeriesDTO(s.getId(), s.getTitle(), s.getTotalSeasons(), s.getReview(), s.getGenre(), s.getActors(), s.getPoster(), s.getSynopses());
+        }
+        return null;
+    }
+
+    public List<EpisodeDTO> getAllSeasons(Long id) {
+        Optional<Series> series = repository.findById(id);
+
+        if(series.isPresent()){
+            Series s = series.get();
+            return s.getEpisodes().stream()
+                    .map(e -> new EpisodeDTO(e.getEpisode(), e.getTitle(), e.getSeason()))
+                    .collect(Collectors.toList());
         }
         return null;
     }
